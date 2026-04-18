@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin | Cristhian Ilizarbe</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0010;
+            font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+            padding: 2rem; min-height: 100vh; overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(180,0,255,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(255,0,255,0.08) 0%, transparent 50%);
+            pointer-events: none; z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(
+                0deg, transparent, transparent 2px,
+                rgba(180,0,255,0.02) 2px, rgba(180,0,255,0.02) 4px
+            );
+            pointer-events: none; z-index: 0;
+        }
+
+        .header {
+            position: relative; z-index: 10;
+            background: rgba(10, 0, 20, 0.9);
+            backdrop-filter: blur(12px);
+            padding: 1rem 2rem;
+            display: flex; justify-content: space-between;
+            align-items: center; flex-wrap: wrap;
+            border-bottom: 2px solid #b400ff;
+            box-shadow: 0 0 20px rgba(180,0,255,0.4);
+            margin-bottom: 2rem; border-radius: 8px;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 1rem; }
+
+        .logo {
+            width: 52px; height: 52px;
+            border-radius: 10px; overflow: hidden;
+            border: 2px solid #b400ff;
+            box-shadow: 0 0 12px #b400ff88;
+        }
+
+        .logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        .facultad h3 {
+            color: #cc44ff; font-size: 0.8rem; letter-spacing: 2px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .facultad h2 {
+            color: #fff; font-size: 1.1rem;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 8px #b400ff;
+        }
+
+        .nav-menu { display: flex; gap: 1.5rem; }
+
+        .nav-menu a {
+            color: #cc44ff; text-decoration: none; font-weight: 700;
+            padding: 0.5rem 1.2rem; border-radius: 4px;
+            border: 1px solid #b400ff44;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem; letter-spacing: 1px; transition: all 0.3s;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(180,0,255,0.2); color: #ff00ff;
+            border-color: #ff00ff; box-shadow: 0 0 12px #ff00ff66;
+        }
+
+        .dashboard {
+            position: relative; z-index: 1;
+            max-width: 1200px; margin: 0 auto;
+        }
+
+        h1 {
+            color: #cc44ff; margin-bottom: 1rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem; letter-spacing: 3px;
+            text-shadow: 0 0 15px #b400ff;
+        }
+
+        .bienvenida {
+            background: rgba(180,0,255,0.15);
+            border: 1px solid #b400ff66;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px; display: inline-block;
+            margin-bottom: 1.5rem; color: #d4a0ff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem; letter-spacing: 1px;
+        }
+
+        .bienvenida strong { color: #ff00ff; text-shadow: 0 0 8px #ff00ff66; }
+
+        .selector-semana {
+            background: rgba(20, 0, 40, 0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 8px; padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #b400ff44;
+        }
+
+        .selector-semana h3 {
+            color: #cc44ff; margin-bottom: 1rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem; letter-spacing: 1px;
+        }
+
+        select, button {
+            padding: 10px 15px; border-radius: 4px;
+            border: 1px solid #b400ff66; font-size: 0.95rem; margin: 0.5rem;
+        }
+
+        select {
+            background: rgba(20,0,40,0.9); color: #d4a0ff;
+            min-width: 320px; font-family: 'Rajdhani', sans-serif;
+            outline: none;
+        }
+
+        select:focus { border-color: #ff00ff; box-shadow: 0 0 8px #ff00ff44; }
+
+        button {
+            background: transparent; color: #ff00ff;
+            border: 1px solid #ff00ff; cursor: pointer;
+            transition: 0.3s; font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem; letter-spacing: 1px;
+        }
+
+        button:hover {
+            background: rgba(255,0,255,0.15);
+            box-shadow: 0 0 12px #ff00ff66;
+        }
+
+        .form-edicion {
+            background: rgba(20, 0, 40, 0.8);
+            border: 1px solid #b400ff44;
+            border-radius: 8px; padding: 1.5rem; margin-top: 1rem;
+        }
+
+        .form-edicion h3 {
+            color: #cc44ff; margin-bottom: 1rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem; letter-spacing: 1px;
+        }
+
+        .form-edicion input, .form-edicion textarea {
+            width: 100%; padding: 10px 14px; margin: 8px 0;
+            background: rgba(180,0,255,0.08);
+            border: 1px solid #b400ff66; border-radius: 4px;
+            font-family: 'Rajdhani', sans-serif;
+            color: #d4a0ff; font-size: 0.95rem;
+            outline: none; transition: 0.3s;
+        }
+
+        .form-edicion input::placeholder,
+        .form-edicion textarea::placeholder { color: #5533aa; }
+
+        .form-edicion input:focus,
+        .form-edicion textarea:focus {
+            border-color: #ff00ff; box-shadow: 0 0 8px #ff00ff44;
+            background: rgba(180,0,255,0.15);
+        }
+
+        .form-edicion textarea { border-radius: 4px; resize: vertical; }
+
+        .estado-select { margin: 1rem 0; }
+
+        .estado-select label {
+            margin-right: 1rem; color: #cc44ff; font-weight: 700;
+            font-family: 'Orbitron', sans-serif; font-size: 0.8rem;
+        }
+
+        /* Archivos */
+        .archivos-section {
+            margin-top: 1.5rem; padding-top: 1rem;
+            border-top: 1px dashed #b400ff44;
+        }
+
+        .archivos-section h4 {
+            color: #cc44ff; margin-bottom: 1rem;
+            font-family: 'Orbitron', sans-serif; font-size: 0.85rem;
+        }
+
+        .archivo-item {
+            background: rgba(180,0,255,0.08);
+            border: 1px solid #b400ff33;
+            padding: 0.8rem; margin: 0.5rem 0;
+            border-radius: 4px;
+            display: flex; justify-content: space-between;
+            align-items: center; flex-wrap: wrap;
+        }
+
+        .archivo-info {
+            display: flex; align-items: center;
+            gap: 1rem; flex-wrap: wrap; color: #d4a0ff;
+        }
+
+        .archivo-info a { color: #cc44ff; text-decoration: none; font-weight: bold; }
+        .archivo-info a:hover { color: #ff00ff; text-shadow: 0 0 8px #ff00ff; }
+
+        .btn-eliminar-archivo {
+            background: rgba(255,50,50,0.2);
+            border: 1px solid #ff444466;
+            color: #ff6666; padding: 5px 12px; font-size: 0.8rem;
+        }
+
+        .btn-eliminar-archivo:hover { background: rgba(255,50,50,0.4); }
+
+        .subir-archivo {
+            display: flex; gap: 1rem;
+            align-items: center; flex-wrap: wrap; margin: 1rem 0;
+        }
+
+        .subir-archivo input[type="file"] {
+            background: rgba(180,0,255,0.08);
+            border: 1px solid #b400ff66; color: #d4a0ff;
+        }
+
+        .preview {
+            margin-top: 1rem; padding: 1rem;
+            background: rgba(180,0,255,0.08);
+            border: 1px solid #b400ff33;
+            border-radius: 6px; border-left: 3px solid #b400ff;
+            font-size: 0.9rem; color: #d4a0ff; line-height: 1.7;
+        }
+
+        .nav-links {
+            margin-top: 2rem; display: flex;
+            gap: 1rem; flex-wrap: wrap; align-items: center;
+        }
+
+        .nav-links a {
+            background: transparent; color: #cc44ff;
+            border: 1px solid #b400ff66;
+            padding: 0.6rem 1.5rem; border-radius: 4px;
+            text-decoration: none; font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem; letter-spacing: 1px; transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: rgba(180,0,255,0.2); color: #ff00ff;
+            border-color: #ff00ff; box-shadow: 0 0 10px #ff00ff44;
+        }
+
+        .instruccion {
+            background: rgba(180,0,255,0.08);
+            border: 1px solid #b400ff33;
+            padding: 1rem; border-radius: 6px;
+            margin-bottom: 1rem; font-size: 0.9rem; color: #9966cc;
+        }
+
+        code {
+            background: rgba(180,0,255,0.2); padding: 2px 6px;
+            border-radius: 3px; color: #ff00ff; font-size: 0.85em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-area">
+            <div class="logo">
+                <img src="imagenes/descarga.png" alt="Logo UPLA">
+            </div>
+            <div class="facultad">
+                <h3>FACULTAD DE INGENIERÍA</h3>
+                <h2>Sistemas y Computación</h2>
+            </div>
+        </div>
+        <div class="nav-menu">
+            <a href="index.html">INICIO</a>
+            <a href="trabajos.html">TRABAJOS</a>
+            <a href="login.html">LOGIN</a>
+        </div>
+    </div>
+
+    <div class="dashboard">
+        <h1>⬡ PANEL DE ADMINISTRACIÓN</h1>
+        <div class="bienvenida">⬡ Bienvenido, <strong>Cristhian</strong> — Gestiona tus 16 semanas</div>
+
+        <div class="selector-semana">
+            <h3>▶ SELECCIONA LA SEMANA A EDITAR</h3>
+            <select id="semanaSelect">
+                <option value="">-- Selecciona una semana (1 a 16) --</option>
+            </select>
+            <button id="cargarSemana">▶ EDITAR SEMANA</button>
+        </div>
+
+        <div id="formEditar" class="form-edicion" style="display: none;">
+            <h3 id="semanaTitulo"></h3>
+            <input type="text" id="editTitulo" placeholder="Título (ej: Semana 1)">
+            <textarea id="editDescripcion" rows="3" placeholder="Descripción del trabajo"></textarea>
+            <input type="text" id="editEnlace" placeholder="Enlace de GitHub/Drive (URL)">
+
+            <div class="estado-select">
+                <label>ESTADO:</label>
+                <select id="editEstado">
+                    <option value="pendiente">⏳ Pendiente</option>
+                    <option value="subido">↑ Subido</option>
+                    <option value="completado">✓ Completado</option>
+                </select>
+            </div>
+
+            <div class="archivos-section">
+                <h4>📎 ARCHIVOS ADJUNTOS (PDF, PPT, imágenes)</h4>
+                <div class="subir-archivo">
+                    <input type="file" id="fileInput" accept=".pdf,.ppt,.pptx,.doc,.docx,.jpg,.png,.gif,.zip">
+                    <button id="btnSubirArchivo">↑ SUBIR ARCHIVO</button>
+                </div>
+                <div id="listaArchivos"></div>
+                <p style="font-size:0.75rem; color:#553388; margin-top:0.5rem;">
+                    ⚠ Los archivos se guardan en localStorage.
+                    Para GitHub usa GitHub Desktop o VS Code → carpeta <code>archivos/semanaX/</code>
+                </p>
+            </div>
+
+            <button id="guardarCambios">💾 GUARDAR CAMBIOS</button>
+            <div class="preview" id="preview"></div>
+        </div>
+
+        <div class="nav-links">
+            <a href="trabajos.html">⬡ VER PORTAFOLIO</a>
+            <button id="btnExportar" style="background:rgba(120,0,200,0.2); border-color:#7700cc; color:#cc44ff;">↓ EXPORTAR RESPALDO</button>
+            <button id="btnImportar" style="background:rgba(120,0,200,0.2); border-color:#7700cc; color:#cc44ff;">↑ IMPORTAR RESPALDO</button>
+            <a href="#" id="btnCerrarSesion">🚪 CERRAR SESIÓN</a>
+        </div>
+    </div>
+
+    <script>
+        if (localStorage.getItem('adminLogged') !== 'true') {
+            window.location.href = "login.html";
+        }
+
+        let trabajosData = {};
+        let semanaActual = { unidad: null, semanaGlobal: null };
+
+        function inicializarSemanas() {
+            trabajosData = {
+                1: { nombre: "Unidad 1 - Optimización y Transacciones", semanas: {} },
+                2: { nombre: "Unidad 2 - Programación en Servidor", semanas: {} },
+                3: { nombre: "Unidad 3 - Bases de Datos NoSQL", semanas: {} },
+                4: { nombre: "Unidad 4 - Administración y Seguridad", semanas: {} }
+            };
+            for (let u = 1; u <= 4; u++) {
+                for (let s = 1; s <= 4; s++) {
+                    const sg = (u-1)*4 + s;
+                    trabajosData[u].semanas[sg] = {
+                        titulo: `Semana ${sg}`,
+                        descripcion: `Trabajo de la Semana ${sg} - ${trabajosData[u].nombre}`,
+                        enlace: "#", estado: "pendiente", archivos: []
+                    };
+                }
+            }
+        }
+
+        function cargarDatos() {
+            const stored = localStorage.getItem('trabajos_estructura');
+            if (stored) {
+                trabajosData = JSON.parse(stored);
+                for (let u = 1; u <= 4; u++) {
+                    for (let s = 1; s <= 4; s++) {
+                        const sg = (u-1)*4 + s;
+                        if (!trabajosData[u].semanas[sg].archivos)
+                            trabajosData[u].semanas[sg].archivos = [];
+                    }
+                }
+            } else {
+                inicializarSemanas();
+                localStorage.setItem('trabajos_estructura', JSON.stringify(trabajosData));
+            }
+        }
+
+        function guardarDatos() {
+            localStorage.setItem('trabajos_estructura', JSON.stringify(trabajosData));
+        }
+
+        function llenarSelect() {
+            const select = document.getElementById('semanaSelect');
+            select.innerHTML = '<option value="">-- Selecciona una semana (1 a 16) --</option>';
+            for (let u = 1; u <= 4; u++) {
+                for (let s = 1; s <= 4; s++) {
+                    const sg = (u-1)*4 + s;
+                    const semana = trabajosData[u].semanas[sg];
+                    if (semana) {
+                        const opt = document.createElement('option');
+                        opt.value = `${u}|${sg}`;
+                        opt.textContent = `${trabajosData[u].nombre} - Semana ${sg}`;
+                        select.appendChild(opt);
+                    }
+                }
+            }
+        }
+
+        function renderizarListaArchivos() {
+            const contenedor = document.getElementById('listaArchivos');
+            if (!semanaActual.unidad) return;
+            const semana = trabajosData[semanaActual.unidad].semanas[semanaActual.semanaGlobal];
+            const archivos = semana.archivos || [];
+            if (archivos.length === 0) {
+                contenedor.innerHTML = '<p style="color:#553388;">📂 No hay archivos subidos para esta semana</p>';
+                return;
+            }
+            let html = '';
+            archivos.forEach((archivo, index) => {
+                html += `
+                    <div class="archivo-item">
+                        <div class="archivo-info">
+                            📄 <strong>${archivo.nombre}</strong>
+                            <small>(${Math.round(archivo.tamaño/1024)} KB)</small>
+                            <a href="${archivo.dataURL}" target="_blank">👁 Ver</a>
+                            <a href="${archivo.dataURL}" download="${archivo.nombre}">⬇ Descargar</a>
+                        </div>
+                        <button class="btn-eliminar-archivo" onclick="eliminarArchivo(${index})">🗑</button>
+                    </div>
+                `;
+            });
+            contenedor.innerHTML = html;
+        }
+
+        function eliminarArchivo(index) {
+            if (!semanaActual.unidad) return;
+            const semana = trabajosData[semanaActual.unidad].semanas[semanaActual.semanaGlobal];
+            semana.archivos.splice(index, 1);
+            guardarDatos(); renderizarListaArchivos(); actualizarPreview();
+        }
+
+        function actualizarPreview() {
+            if (!semanaActual.unidad) return;
+            const semana = trabajosData[semanaActual.unidad].semanas[semanaActual.semanaGlobal];
+            const titulo = document.getElementById('editTitulo').value;
+            const desc = document.getElementById('editDescripcion').value;
+            const enlace = document.getElementById('editEnlace').value;
+            const estado = document.getElementById('editEstado').value;
+            const estadoTexto = estado === 'completado' ? '✓ Completado' : (estado === 'subido' ? '↑ Subido' : '⏳ Pendiente');
+            const numArchivos = (semana.archivos || []).length;
+            document.getElementById('preview').innerHTML = `
+                <strong style="color:#cc44ff;">▶ VISTA PREVIA:</strong><br><br>
+                ⬡ <strong>Título:</strong> ${titulo}<br>
+                ⬡ <strong>Descripción:</strong> ${desc}<br>
+                ⬡ <strong>Enlace:</strong> ${enlace !== '#' ? enlace : 'Sin enlace'}<br>
+                ⬡ <strong>Estado:</strong> ${estadoTexto}<br>
+                ⬡ <strong>Archivos:</strong> ${numArchivos} archivo(s) adjunto(s)
+            `;
+        }
+
+        document.getElementById('cargarSemana').addEventListener('click', function() {
+            const valor = document.getElementById('semanaSelect').value;
+            if (!valor) { alert('Selecciona una semana'); return; }
+            const [unidad, sg] = valor.split('|');
+            semanaActual = { unidad: parseInt(unidad), semanaGlobal: parseInt(sg) };
+            const semana = trabajosData[unidad].semanas[sg];
+            document.getElementById('editTitulo').value = semana.titulo;
+            document.getElementById('editDescripcion').value = semana.descripcion;
+            document.getElementById('editEnlace').value = semana.enlace;
+            document.getElementById('editEstado').value = semana.estado;
+            document.getElementById('semanaTitulo').textContent = `▶ Editando: ${trabajosData[unidad].nombre} - Semana ${sg}`;
+            document.getElementById('formEditar').style.display = 'block';
+            renderizarListaArchivos(); actualizarPreview();
+        });
+
+        document.getElementById('btnSubirArchivo').addEventListener('click', function() {
+            if (!semanaActual.unidad) { alert('Primero selecciona una semana'); return; }
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            if (!file) { alert('Selecciona un archivo'); return; }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const archivo = { nombre: file.name, tipo: file.type, tamaño: file.size, dataURL: e.target.result };
+                const semana = trabajosData[semanaActual.unidad].semanas[semanaActual.semanaGlobal];
+                if (!semana.archivos) semana.archivos = [];
+                semana.archivos.push(archivo);
+                guardarDatos(); renderizarListaArchivos(); actualizarPreview();
+                fileInput.value = '';
+                alert('✓ Archivo guardado localmente');
+            };
+            reader.readAsDataURL(file);
+        });
+
+        document.getElementById('guardarCambios').addEventListener('click', function() {
+            if (!semanaActual.unidad) return;
+            const semana = trabajosData[semanaActual.unidad].semanas[semanaActual.semanaGlobal];
+            semana.titulo = document.getElementById('editTitulo').value;
+            semana.descripcion = document.getElementById('editDescripcion').value;
+            semana.enlace = document.getElementById('editEnlace').value;
+            semana.estado = document.getElementById('editEstado').value;
+            guardarDatos();
+            alert('✓ Trabajo guardado correctamente');
+            llenarSelect(); actualizarPreview();
+        });
+
+        document.getElementById('editTitulo').addEventListener('input', actualizarPreview);
+        document.getElementById('editDescripcion').addEventListener('input', actualizarPreview);
+        document.getElementById('editEnlace').addEventListener('input', actualizarPreview);
+        document.getElementById('editEstado').addEventListener('change', actualizarPreview);
+
+        document.getElementById('btnExportar').addEventListener('click', function() {
+            const datos = localStorage.getItem('trabajos_estructura');
+            const blob = new Blob([datos], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'portafolio_backup.json'; a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        document.getElementById('btnImportar').addEventListener('click', function() {
+            const input = document.createElement('input');
+            input.type = 'file'; input.accept = 'application/json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    const datos = JSON.parse(ev.target.result);
+                    localStorage.setItem('trabajos_estructura', JSON.stringify(datos));
+                    alert('Datos importados. Recargando...');
+                    location.reload();
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        });
+
+        document.getElementById('btnCerrarSesion').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('adminLogged');
+            window.location.href = "index.html";
+        });
+
+        cargarDatos(); llenarSelect();
+    </script>
+</body>
+</html>

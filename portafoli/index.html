@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="vewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio | Cristhian Ilizarbe - Ingeniería de Sistemas</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+            background: #0a0010;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Fondo animado cyberpunk */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(180, 0, 255, 0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 60% 80%, rgba(120, 0, 200, 0.12) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Scanlines */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(180, 0, 255, 0.02) 2px,
+                rgba(180, 0, 255, 0.02) 4px
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* HEADER */
+        .header {
+            position: relative;
+            z-index: 10;
+            background: rgba(10, 0, 20, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #b400ff;
+            box-shadow: 0 0 20px rgba(180, 0, 255, 0.4), inset 0 -1px 0 #ff00ff44;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 52px;
+            height: 52px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #b400ff;
+            box-shadow: 0 0 12px #b400ff88;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .facultad h3 {
+            color: #cc44ff;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .facultad h2 {
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 8px #b400ff;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-menu a {
+            color: #cc44ff;
+            text-decoration: none;
+            font-weight: 700;
+            padding: 0.5rem 1.2rem;
+            border-radius: 4px;
+            border: 1px solid #b400ff44;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-menu a::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(180,0,255,0.3), transparent);
+            transition: left 0.4s;
+        }
+
+        .nav-menu a:hover::before { left: 100%; }
+
+        .nav-menu a:hover {
+            background: rgba(180, 0, 255, 0.2);
+            color: #ff00ff;
+            border-color: #ff00ff;
+            box-shadow: 0 0 12px #ff00ff66;
+        }
+
+        /* MAIN */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .hero {
+            text-align: center;
+            background: rgba(20, 0, 40, 0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 1rem;
+            padding: 3rem;
+            border: 1px solid #b400ff66;
+            box-shadow: 0 0 40px rgba(180, 0, 255, 0.2), inset 0 0 60px rgba(180, 0, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, #b400ff, #ff00ff, #7700cc, #b400ff);
+            background-size: 400%;
+            border-radius: 1rem;
+            z-index: -1;
+            animation: borderGlow 4s linear infinite;
+            opacity: 0.4;
+        }
+
+        @keyframes borderGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .robot-icon {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(145deg, #7700cc, #b400ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 0 30px rgba(180, 0, 255, 0.7), 0 0 60px rgba(180, 0, 255, 0.3);
+            animation: float 3s ease-in-out infinite;
+            border: 2px solid #ff00ff;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); box-shadow: 0 0 30px rgba(180,0,255,0.7), 0 0 60px rgba(180,0,255,0.3); }
+            50% { transform: translateY(-12px); box-shadow: 0 0 50px rgba(255,0,255,0.9), 0 0 80px rgba(180,0,255,0.5); }
+        }
+
+        .robot-icon svg {
+            width: 90px;
+            height: 90px;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            background: linear-gradient(135deg, #cc44ff, #ff00ff, #b400ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+            text-shadow: none;
+            filter: drop-shadow(0 0 10px #b400ff);
+            letter-spacing: 2px;
+        }
+
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            background: linear-gradient(135deg, #cc44ff, #ff00ff, #b400ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .glitch::before {
+            animation: glitch1 3s infinite;
+            clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+        }
+
+        .glitch::after {
+            animation: glitch2 3s infinite;
+            clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+        }
+
+        @keyframes glitch1 {
+            0%, 90%, 100% { transform: translate(0); }
+            92% { transform: translate(-3px, 1px); }
+            94% { transform: translate(3px, -1px); }
+            96% { transform: translate(-2px, 0); }
+        }
+
+        @keyframes glitch2 {
+            0%, 90%, 100% { transform: translate(0); }
+            92% { transform: translate(3px, -1px); }
+            94% { transform: translate(-3px, 1px); }
+            96% { transform: translate(2px, 0); }
+        }
+
+        .descripcion {
+            color: #d4a0ff;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            max-width: 620px;
+            margin: 1rem auto;
+        }
+
+        .descripcion strong {
+            color: #ff00ff;
+            text-shadow: 0 0 8px #ff00ff66;
+        }
+
+        .badge-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: transparent;
+            color: #cc44ff;
+            padding: 0.5rem 1.4rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            border: 1px solid #b400ff;
+            box-shadow: 0 0 10px #b400ff44, inset 0 0 10px rgba(180,0,255,0.1);
+            transition: all 0.3s;
+        }
+
+        .badge:hover {
+            box-shadow: 0 0 20px #ff00ff88, inset 0 0 20px rgba(255,0,255,0.15);
+            color: #ff00ff;
+            border-color: #ff00ff;
+        }
+
+        /* Línea decorativa cyber */
+        .cyber-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #b400ff, #ff00ff, #b400ff, transparent);
+            margin: 2rem 0;
+            animation: scanline 2s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 2rem;
+            color: #7733aa;
+            border-top: 1px solid rgba(180, 0, 255, 0.3);
+            margin-top: 2rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-area">
+            <div class="logo">
+                <img src="imagenes/descarga.png" alt="Logo UPLA">
+            </div>
+            <div class="facultad">
+                <h3>FACULTAD DE INGENIERÍA</h3>
+                <h2>Sistemas y Computación</h2>
+            </div>
+        </div>
+        <div class="nav-menu">
+            <a href="index.html">INICIO</a>
+            <a href="trabajos.html">TRABAJOS</a>
+            <a href="login.html">LOGIN</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="hero">
+            <div class="robot-icon">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="13,2 6,14 11,14 11,22 18,10 13,10" fill="#ff00ff"/>
+        <polygon points="13,2 6,14 11,14 11,22 18,10 13,10" fill="none" stroke="#ffffff" stroke-width="0.5"/>
+    </svg>
+</div>
+
+            <div class="cyber-line"></div>
+
+            <h1 class="glitch" data-text="CRISTHIAN RICARDO ILIZARBE DE LA CRUZ">
+                CRISTHIAN RICARDO ILIZARBE DE LA CRUZ
+            </h1>
+
+            <div class="cyber-line"></div>
+
+            <div class="descripcion">
+                <strong>Base de Datos II</strong>
+            </div>
+            <div class="descripcion">
+                "BIENVENIDO A MI PORTAFOLIO ACADÉMICO" <br>
+                <strong>En este portafolio veremos todos los avances en el transcurso del ciclo
+                donde cada semana veremos un tema diferente.</strong>
+            </div>
+            <div class="badge-container">
+                <span class="badge">⬡ INGENIERÍA DE SISTEMAS</span>
+                <span class="badge">⬡ BASE DE DATOS II</span>
+                <span class="badge">⬡ 4 UNIDADES | 16 TRABAJOS</span>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        © 2026 | INGENIERÍA DE SISTEMAS | PORTAFOLIO ACADÉMICO | BASE DE DATOS II
+    </footer>
+</body>
+</html>
