@@ -2,16 +2,14 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="vewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio | Cristhian Ilizarbe - Ingeniería de Sistemas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | Cristhian Ilizarbe</title>
+    <!-- SDK de Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap');
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Rajdhani', 'Segoe UI', sans-serif;
@@ -20,312 +18,230 @@
             overflow-x: hidden;
         }
 
-        /* Fondo animado cyberpunk */
         body::before {
             content: '';
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             background:
-                radial-gradient(ellipse at 20% 50%, rgba(180, 0, 255, 0.15) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 20%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(ellipse at 60% 80%, rgba(120, 0, 200, 0.12) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
+                radial-gradient(ellipse at 20% 50%, rgba(180,0,255,0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(255,0,255,0.1) 0%, transparent 50%);
+            pointer-events: none; z-index: 0;
         }
 
-        /* Scanlines */
         body::after {
             content: '';
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(180, 0, 255, 0.02) 2px,
-                rgba(180, 0, 255, 0.02) 4px
+                0deg, transparent, transparent 2px,
+                rgba(180,0,255,0.02) 2px, rgba(180,0,255,0.02) 4px
             );
-            pointer-events: none;
-            z-index: 0;
+            pointer-events: none; z-index: 0;
         }
 
-        /* HEADER */
         .header {
-            position: relative;
-            z-index: 10;
-            background: rgba(10, 0, 20, 0.85);
+            position: relative; z-index: 10;
+            background: rgba(10,0,20,0.9);
             backdrop-filter: blur(12px);
             padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
+            display: flex; justify-content: space-between;
+            align-items: center; flex-wrap: wrap;
             border-bottom: 2px solid #b400ff;
-            box-shadow: 0 0 20px rgba(180, 0, 255, 0.4), inset 0 -1px 0 #ff00ff44;
+            box-shadow: 0 0 20px rgba(180,0,255,0.4);
         }
 
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logo {
-            width: 52px;
-            height: 52px;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 2px solid #b400ff;
-            box-shadow: 0 0 12px #b400ff88;
-        }
-
-        .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .facultad h3 {
-            color: #cc44ff;
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            font-family: 'Orbitron', sans-serif;
-        }
-
-        .facultad h2 {
-            color: #ffffff;
-            font-size: 1.1rem;
-            font-family: 'Orbitron', sans-serif;
-            text-shadow: 0 0 8px #b400ff;
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 1.5rem;
-        }
-
+        .logo-area { display: flex; align-items: center; gap: 1rem; }
+        .logo { width: 52px; height: 52px; border-radius: 10px; overflow: hidden; border: 2px solid #b400ff; box-shadow: 0 0 12px #b400ff88; }
+        .logo img { width: 100%; height: 100%; object-fit: cover; }
+        .facultad h3 { color: #cc44ff; font-size: 0.8rem; letter-spacing: 2px; font-family: 'Orbitron', sans-serif; }
+        .facultad h2 { color: #fff; font-size: 1.1rem; font-family: 'Orbitron', sans-serif; text-shadow: 0 0 8px #b400ff; }
+        .nav-menu { display: flex; gap: 1.5rem; }
         .nav-menu a {
-            color: #cc44ff;
-            text-decoration: none;
-            font-weight: 700;
-            padding: 0.5rem 1.2rem;
-            border-radius: 4px;
+            color: #cc44ff; text-decoration: none; font-weight: 700;
+            padding: 0.5rem 1.2rem; border-radius: 4px;
             border: 1px solid #b400ff44;
             font-family: 'Orbitron', sans-serif;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
+            font-size: 0.8rem; letter-spacing: 1px; transition: all 0.3s;
         }
+        .nav-menu a:hover { background: rgba(180,0,255,0.2); color: #ff00ff; border-color: #ff00ff; box-shadow: 0 0 12px #ff00ff66; }
 
-        .nav-menu a::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(180,0,255,0.3), transparent);
-            transition: left 0.4s;
-        }
-
-        .nav-menu a:hover::before { left: 100%; }
-
-        .nav-menu a:hover {
-            background: rgba(180, 0, 255, 0.2);
-            color: #ff00ff;
-            border-color: #ff00ff;
-            box-shadow: 0 0 12px #ff00ff66;
-        }
-
-        /* MAIN */
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 3rem 2rem;
-        }
-
-        .hero {
-            text-align: center;
-            background: rgba(20, 0, 40, 0.7);
-            backdrop-filter: blur(8px);
-            border-radius: 1rem;
-            padding: 3rem;
-            border: 1px solid #b400ff66;
-            box-shadow: 0 0 40px rgba(180, 0, 255, 0.2), inset 0 0 60px rgba(180, 0, 255, 0.05);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -2px; left: -2px; right: -2px; bottom: -2px;
-            background: linear-gradient(45deg, #b400ff, #ff00ff, #7700cc, #b400ff);
-            background-size: 400%;
-            border-radius: 1rem;
-            z-index: -1;
-            animation: borderGlow 4s linear infinite;
-            opacity: 0.4;
-        }
-
-        @keyframes borderGlow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .robot-icon {
-            width: 150px;
-            height: 150px;
-            background: linear-gradient(145deg, #7700cc, #b400ff);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-            box-shadow: 0 0 30px rgba(180, 0, 255, 0.7), 0 0 60px rgba(180, 0, 255, 0.3);
-            animation: float 3s ease-in-out infinite;
-            border: 2px solid #ff00ff;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); box-shadow: 0 0 30px rgba(180,0,255,0.7), 0 0 60px rgba(180,0,255,0.3); }
-            50% { transform: translateY(-12px); box-shadow: 0 0 50px rgba(255,0,255,0.9), 0 0 80px rgba(180,0,255,0.5); }
-        }
-
-        .robot-icon svg {
-            width: 90px;
-            height: 90px;
+        .dashboard {
+            position: relative; z-index: 1;
+            max-width: 900px; margin: 0 auto; padding: 2rem;
         }
 
         h1 {
+            color: #cc44ff; margin-bottom: 1rem;
             font-family: 'Orbitron', sans-serif;
-            font-size: 2rem;
-            background: linear-gradient(135deg, #cc44ff, #ff00ff, #b400ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 1rem;
-            text-shadow: none;
-            filter: drop-shadow(0 0 10px #b400ff);
-            letter-spacing: 2px;
+            font-size: 1.5rem; letter-spacing: 3px;
+            text-shadow: 0 0 20px #b400ff;
         }
 
-        .glitch {
-            position: relative;
+        .bienvenida {
+            background: rgba(180,0,255,0.1);
+            border: 1px solid #b400ff44;
+            padding: 0.8rem 1.2rem; border-radius: 4px;
+            color: #d4a0ff; margin-bottom: 2rem;
+            border-left: 3px solid #b400ff;
         }
 
-        .glitch::before, .glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            background: linear-gradient(135deg, #cc44ff, #ff00ff, #b400ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+        /* INDICADOR CONEXIÓN */
+        .conn-status {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-size: 0.8rem; font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px; padding: 0.4rem 1rem;
+            border-radius: 4px; margin-bottom: 1.5rem;
+            border: 1px solid #b400ff44;
+        }
+        .conn-dot { width: 8px; height: 8px; border-radius: 50%; background: #553388; }
+        .conn-status.ok .conn-dot { background: #00ff88; box-shadow: 0 0 6px #00ff88; }
+        .conn-status.ok { color: #00ff88; border-color: #00ff8844; }
+        .conn-status.err { color: #ff4444; border-color: #ff444444; }
+        .conn-status.err .conn-dot { background: #ff4444; box-shadow: 0 0 6px #ff4444; }
+
+        .selector-semana {
+            background: rgba(20,0,40,0.7);
+            border: 1px solid #b400ff44;
+            border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem;
         }
 
-        .glitch::before {
-            animation: glitch1 3s infinite;
-            clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+        .selector-semana h3 {
+            color: #cc44ff; margin-bottom: 1rem;
+            font-family: 'Orbitron', sans-serif; font-size: 0.9rem; letter-spacing: 2px;
         }
 
-        .glitch::after {
-            animation: glitch2 3s infinite;
-            clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+        select, input[type="text"], textarea {
+            width: 100%; padding: 12px 16px;
+            background: rgba(180,0,255,0.08);
+            border: 1px solid #b400ff66; border-radius: 4px;
+            font-size: 1rem; color: #e0b0ff; outline: none;
+            transition: 0.3s; font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 1px; margin: 6px 0;
         }
 
-        @keyframes glitch1 {
-            0%, 90%, 100% { transform: translate(0); }
-            92% { transform: translate(-3px, 1px); }
-            94% { transform: translate(3px, -1px); }
-            96% { transform: translate(-2px, 0); }
+        select option { background: #1a0030; color: #e0b0ff; }
+        input::placeholder, textarea::placeholder { color: #6633aa; }
+        input:focus, textarea:focus, select:focus {
+            border-color: #ff00ff; box-shadow: 0 0 12px #ff00ff44;
+            background: rgba(180,0,255,0.15);
         }
 
-        @keyframes glitch2 {
-            0%, 90%, 100% { transform: translate(0); }
-            92% { transform: translate(3px, -1px); }
-            94% { transform: translate(-3px, 1px); }
-            96% { transform: translate(2px, 0); }
+        button {
+            background: transparent; color: #ff00ff;
+            border: 1px solid #ff00ff; padding: 10px 20px;
+            border-radius: 4px; font-weight: 700; font-size: 0.85rem;
+            cursor: pointer; margin-top: 0.8rem; transition: 0.3s;
+            font-family: 'Orbitron', sans-serif; letter-spacing: 1px;
+            position: relative; overflow: hidden;
         }
 
-        .descripcion {
-            color: #d4a0ff;
-            font-size: 1.1rem;
-            line-height: 1.7;
-            max-width: 620px;
-            margin: 1rem auto;
+        button::before {
+            content: ''; position: absolute; top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,0,255,0.3), transparent);
+            transition: left 0.4s;
+        }
+        button:hover::before { left: 100%; }
+        button:hover { background: rgba(255,0,255,0.15); box-shadow: 0 0 20px #ff00ff66; }
+        button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .form-edicion {
+            background: rgba(20,0,40,0.7);
+            border: 1px solid #b400ff44; border-radius: 8px; padding: 1.5rem;
+            margin-bottom: 2rem;
         }
 
-        .descripcion strong {
-            color: #ff00ff;
-            text-shadow: 0 0 8px #ff00ff66;
+        .form-edicion h3 {
+            color: #ff00ff; margin-bottom: 1rem;
+            font-family: 'Orbitron', sans-serif; font-size: 0.9rem; letter-spacing: 2px;
         }
 
-        .badge-container {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 2rem;
-            flex-wrap: wrap;
+        .estado-select { display: flex; align-items: center; gap: 1rem; margin: 0.8rem 0; flex-wrap: wrap; }
+        .estado-select label { color: #cc44ff; font-family: 'Orbitron', sans-serif; font-size: 0.8rem; letter-spacing: 1px; white-space: nowrap; }
+        .estado-select select { width: auto; min-width: 200px; margin: 0; }
+
+        .archivos-section { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px dashed #b400ff44; }
+        .archivos-section h4 { color: #cc44ff; margin-bottom: 1rem; font-family: 'Orbitron', sans-serif; font-size: 0.85rem; }
+
+        .archivo-item {
+            background: rgba(180,0,255,0.08); border: 1px solid #b400ff33;
+            padding: 0.8rem; margin: 0.5rem 0; border-radius: 4px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
         }
 
-        .badge {
-            background: transparent;
-            color: #cc44ff;
-            padding: 0.5rem 1.4rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            font-family: 'Orbitron', sans-serif;
-            letter-spacing: 1px;
-            border: 1px solid #b400ff;
-            box-shadow: 0 0 10px #b400ff44, inset 0 0 10px rgba(180,0,255,0.1);
-            transition: all 0.3s;
+        .archivo-info { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; color: #d4a0ff; }
+        .archivo-info a { color: #cc44ff; text-decoration: none; font-weight: bold; }
+        .archivo-info a:hover { color: #ff00ff; text-shadow: 0 0 8px #ff00ff; }
+
+        .btn-eliminar-archivo { background: rgba(255,50,50,0.2); border: 1px solid #ff444466; color: #ff6666; padding: 5px 12px; font-size: 0.8rem; margin-top: 0; }
+        .btn-eliminar-archivo:hover { background: rgba(255,50,50,0.4); }
+
+        .subir-archivo { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin: 1rem 0; }
+        .subir-archivo input[type="file"] { background: rgba(180,0,255,0.08); border: 1px solid #b400ff66; color: #d4a0ff; width: auto; }
+
+        .preview {
+            margin-top: 1rem; padding: 1rem;
+            background: rgba(180,0,255,0.08); border: 1px solid #b400ff33;
+            border-radius: 6px; border-left: 3px solid #b400ff;
+            font-size: 0.9rem; color: #d4a0ff; line-height: 1.7;
         }
 
-        .badge:hover {
-            box-shadow: 0 0 20px #ff00ff88, inset 0 0 20px rgba(255,0,255,0.15);
-            color: #ff00ff;
-            border-color: #ff00ff;
+        .nav-links { margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+        .nav-links a {
+            background: transparent; color: #cc44ff; border: 1px solid #b400ff66;
+            padding: 0.6rem 1.5rem; border-radius: 4px; text-decoration: none;
+            font-family: 'Orbitron', sans-serif; font-size: 0.8rem; letter-spacing: 1px; transition: all 0.3s;
         }
+        .nav-links a:hover { background: rgba(180,0,255,0.2); color: #ff00ff; border-color: #ff00ff; box-shadow: 0 0 10px #ff00ff44; }
 
-        /* Línea decorativa cyber */
-        .cyber-line {
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #b400ff, #ff00ff, #b400ff, transparent);
-            margin: 2rem 0;
-            animation: scanline 2s linear infinite;
-        }
+        code { background: rgba(180,0,255,0.2); padding: 2px 6px; border-radius: 3px; color: #ff00ff; font-size: 0.85em; }
 
-        @keyframes scanline {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; }
-            100% { opacity: 0.5; }
+        /* LOADING OVERLAY */
+        .loading-overlay {
+            display: none; position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10,0,20,0.8);
+            z-index: 999; align-items: center; justify-content: center;
+            flex-direction: column; gap: 1rem;
         }
+        .loading-overlay.show { display: flex; }
+        .spinner {
+            width: 40px; height: 40px; border: 3px solid #b400ff33;
+            border-top-color: #ff00ff; border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text { color: #cc44ff; font-family: 'Orbitron', sans-serif; font-size: 0.8rem; letter-spacing: 2px; }
 
-        footer {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            padding: 2rem;
-            color: #7733aa;
-            border-top: 1px solid rgba(180, 0, 255, 0.3);
-            margin-top: 2rem;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.75rem;
-            letter-spacing: 2px;
+        /* TOAST */
+        .toast {
+            position: fixed; bottom: 2rem; right: 2rem;
+            background: rgba(20,0,40,0.95); border: 1px solid #b400ff;
+            color: #d4a0ff; padding: 1rem 1.5rem; border-radius: 6px;
+            font-family: 'Orbitron', sans-serif; font-size: 0.8rem; letter-spacing: 1px;
+            box-shadow: 0 0 20px #b400ff44; z-index: 9999;
+            transform: translateY(100px); opacity: 0;
+            transition: all 0.3s; pointer-events: none;
         }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { border-color: #00ff88; color: #00ff88; }
+        .toast.error { border-color: #ff4444; color: #ff4444; }
     </style>
 </head>
 <body>
+
+    <!-- Loading -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loadingText">CONECTANDO...</div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
     <div class="header">
         <div class="logo-area">
-            <div class="logo">
-                <img src="imagenes/descarga.png" alt="Logo UPLA">
-            </div>
+            <div class="logo"><img src="imagenes/descarga.png" alt="Logo UPLA"></div>
             <div class="facultad">
                 <h3>FACULTAD DE INGENIERÍA</h3>
                 <h2>Sistemas y Computación</h2>
@@ -338,38 +254,422 @@
         </div>
     </div>
 
-    <div class="container">
-        <div class="hero">
-            <div class="robot-icon">
-    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="13,2 6,14 11,14 11,22 18,10 13,10" fill="#ff00ff"/>
-        <polygon points="13,2 6,14 11,14 11,22 18,10 13,10" fill="none" stroke="#ffffff" stroke-width="0.5"/>
-    </svg>
-</div>
+    <div class="dashboard">
+        <h1>⬡ PANEL DE ADMINISTRACIÓN</h1>
+        <div class="bienvenida">⬡ Bienvenido, <strong>Cristhian</strong> — Gestiona tus 16 semanas</div>
 
-            <div class="cyber-line"></div>
+        <div class="conn-status" id="connStatus">
+            <div class="conn-dot"></div>
+            <span id="connText">Verificando conexión...</span>
+        </div>
 
-            <h1 class="glitch" data-text="CRISTHIAN RICARDO ILIZARBE DE LA CRUZ">
-                CRISTHIAN RICARDO ILIZARBE DE LA CRUZ
-            </h1>
+        <div class="selector-semana">
+            <h3>▶ SELECCIONA LA SEMANA A EDITAR</h3>
+            <select id="semanaSelect">
+                <option value="">-- Selecciona una semana (1 a 16) --</option>
+            </select>
+            <button id="cargarSemana">▶ EDITAR SEMANA</button>
+        </div>
 
-            <div class="cyber-line"></div>
+        <div id="formEditar" class="form-edicion" style="display: none;">
+            <h3 id="semanaTitulo"></h3>
+            <input type="text" id="editTitulo" placeholder="Título (ej: Semana 1)">
+            <textarea id="editDescripcion" rows="3" placeholder="Descripción del trabajo"></textarea>
+            <input type="text" id="editEnlace" placeholder="Enlace de GitHub/Drive (URL)">
 
-            <div class="descripcion">
-                <strong>Base de Datos II</strong>
+            <div class="estado-select">
+                <label>ESTADO:</label>
+                <select id="editEstado">
+                    <option value="pendiente">⏳ Pendiente</option>
+                    <option value="subido">↑ Subido</option>
+                    <option value="completado">✓ Completado</option>
+                </select>
             </div>
-            <div class="descripcion">
-                "BIENVENIDO A MI PORTAFOLIO ACADÉMICO" <br>
-                <strong>En este portafolio veremos todos los avances en el transcurso del ciclo
-                donde cada semana veremos un tema diferente.</strong>
+
+            <div class="archivos-section">
+                <h4>📎 ARCHIVOS ADJUNTOS (PDF, PPT, imágenes)</h4>
+                <div class="subir-archivo">
+                    <input type="file" id="fileInput" accept=".pdf,.ppt,.pptx,.doc,.docx,.jpg,.png,.gif,.zip">
+                    <button id="btnSubirArchivo">☁ SUBIR A LA NUBE</button>
+                </div>
+                <div id="uploadProgress" style="display:none; margin:0.5rem 0;">
+                    <div style="background:rgba(180,0,255,0.1); border:1px solid #b400ff44; border-radius:4px; overflow:hidden; height:6px;">
+                        <div id="progressBar" style="height:100%; background:linear-gradient(90deg,#b400ff,#ff00ff); width:0%; transition:width 0.3s;"></div>
+                    </div>
+                    <p id="progressText" style="color:#cc44ff; font-size:0.75rem; margin-top:4px; font-family:'Orbitron',sans-serif; letter-spacing:1px;">SUBIENDO...</p>
+                </div>
+                <div id="listaArchivos"></div>
+                <p style="font-size:0.75rem; color:#00ff8888; margin-top:0.5rem;">
+                    ☁ Los archivos se suben a Supabase Storage — accesibles desde cualquier dispositivo.
+                </p>
             </div>
-            <div class="badge-container">
-                <span class="badge">⬡ INGENIERÍA DE SISTEMAS</span>
-                <span class="badge">⬡ BASE DE DATOS II</span>
-                <span class="badge">⬡ 4 UNIDADES | 16 TRABAJOS</span>
-            </div>
+
+            <button id="guardarCambios">💾 GUARDAR EN SUPABASE</button>
+            <div class="preview" id="preview"></div>
+        </div>
+
+        <div class="nav-links">
+            <a href="trabajos.html">⬡ VER PORTAFOLIO</a>
+            <a href="#" id="btnCerrarSesion">🚪 CERRAR SESIÓN</a>
         </div>
     </div>
+
+    <script>
+        // =============================================
+        // CONFIGURACIÓN SUPABASE
+        // =============================================
+        const SUPABASE_URL = 'https://ayvfxfzfomoirhmxgnxb.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_KfwHIYQWSZW9077UsYzyLA_lSIRMccq';
+        const { createClient } = supabase;
+        const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // =============================================
+        // VERIFICAR LOGIN
+        // =============================================
+        if (localStorage.getItem('adminLogged') !== 'true') {
+            window.location.href = "login.html";
+        }
+
+        // =============================================
+        // ESTADO GLOBAL
+        // =============================================
+        let trabajosData = {};
+        let semanaActual = { unidad: null, semanaGlobal: null };
+
+        const UNIDADES = {
+            1: "Unidad 1 - Optimización y Transacciones",
+            2: "Unidad 2 - Programación en Servidor",
+            3: "Unidad 3 - Bases de Datos NoSQL",
+            4: "Unidad 4 - Administración y Seguridad"
+        };
+
+        // =============================================
+        // HELPERS UI
+        // =============================================
+        function mostrarLoading(texto = 'CARGANDO...') {
+            document.getElementById('loadingText').textContent = texto;
+            document.getElementById('loadingOverlay').classList.add('show');
+        }
+
+        function ocultarLoading() {
+            document.getElementById('loadingOverlay').classList.remove('show');
+        }
+
+        function toast(msg, tipo = 'success') {
+            const el = document.getElementById('toast');
+            el.textContent = msg;
+            el.className = `toast ${tipo} show`;
+            setTimeout(() => el.classList.remove('show'), 3000);
+        }
+
+        function setConexion(ok, texto) {
+            const el = document.getElementById('connStatus');
+            const txt = document.getElementById('connText');
+            el.className = `conn-status ${ok ? 'ok' : 'err'}`;
+            txt.textContent = texto;
+        }
+
+        // =============================================
+        // INICIALIZAR ESTRUCTURA LOCAL
+        // =============================================
+        function inicializarEstructura() {
+            for (let u = 1; u <= 4; u++) {
+                trabajosData[u] = { nombre: UNIDADES[u], semanas: {} };
+                for (let s = 1; s <= 4; s++) {
+                    const sg = (u - 1) * 4 + s;
+                    trabajosData[u].semanas[sg] = {
+                        titulo: `Semana ${sg}`,
+                        descripcion: `Trabajo de la Semana ${sg} - ${UNIDADES[u]}`,
+                        enlace: '#', estado: 'pendiente', archivos: []
+                    };
+                }
+            }
+        }
+
+        // =============================================
+        // CARGAR DATOS DESDE SUPABASE
+        // =============================================
+        async function cargarDesdeSupabase() {
+            mostrarLoading('CARGANDO DATOS...');
+            inicializarEstructura();
+
+            const { data, error } = await db
+                .from('trabajos')
+                .select('*')
+                .order('semana', { ascending: true });
+
+            if (error) {
+                setConexion(false, '⚠ Error de conexión con Supabase');
+                toast('Error al cargar datos: ' + error.message, 'error');
+                ocultarLoading();
+                return;
+            }
+
+            // Sobreescribir con los datos reales de la BD
+            data.forEach(row => {
+                const u = row.unidad;
+                const sg = row.semana;
+                if (trabajosData[u] && trabajosData[u].semanas[sg]) {
+                    trabajosData[u].semanas[sg].titulo = row.titulo || `Semana ${sg}`;
+                    trabajosData[u].semanas[sg].descripcion = row.descripcion || '';
+                    trabajosData[u].semanas[sg].enlace = row.enlace || '#';
+                    trabajosData[u].semanas[sg].estado = row.estado || 'pendiente';
+                    trabajosData[u].semanas[sg].archivos = row.archivos || [];
+                }
+            });
+
+            setConexion(true, '● SUPABASE CONECTADO');
+            ocultarLoading();
+            llenarSelect();
+        }
+
+        // =============================================
+        // GUARDAR EN SUPABASE (UPSERT)
+        // =============================================
+        async function guardarEnSupabase(unidad, semana, datos) {
+            mostrarLoading('GUARDANDO EN SUPABASE...');
+
+            // upsert = insert si no existe, update si ya existe
+            const { error } = await db
+                .from('trabajos')
+                .upsert(
+                    { unidad, semana, ...datos },
+                    { onConflict: 'unidad,semana' }
+                );
+
+            ocultarLoading();
+
+            if (error) {
+                // Si falla el upsert por conflicto, intentar update directo
+                const { error: updateError } = await db
+                    .from('trabajos')
+                    .update(datos)
+                    .eq('unidad', unidad)
+                    .eq('semana', semana);
+
+                if (updateError) {
+                    toast('⚠ Error al guardar: ' + updateError.message, 'error');
+                    return false;
+                }
+            }
+
+            toast('✓ Guardado en Supabase correctamente');
+            return true;
+        }
+
+        // =============================================
+        // LLENAR SELECT DE SEMANAS
+        // =============================================
+        function llenarSelect() {
+            const select = document.getElementById('semanaSelect');
+            select.innerHTML = '<option value="">-- Selecciona una semana (1 a 16) --</option>';
+            for (let u = 1; u <= 4; u++) {
+                for (let s = 1; s <= 4; s++) {
+                    const sg = (u - 1) * 4 + s;
+                    const opt = document.createElement('option');
+                    opt.value = `${u}|${sg}`;
+                    const estado = trabajosData[u].semanas[sg].estado;
+                    const emoji = estado === 'completado' ? '✓' : estado === 'subido' ? '↑' : '⏳';
+                    opt.textContent = `${emoji} ${UNIDADES[u]} - Semana ${sg}`;
+                    select.appendChild(opt);
+                }
+            }
+        }
+
+        // =============================================
+        // ARCHIVOS — SUPABASE STORAGE
+        // =============================================
+        function getIcono(nombre) {
+            const ext = nombre.split('.').pop().toLowerCase();
+            if (ext === 'pdf') return '📑';
+            if (['ppt','pptx'].includes(ext)) return '📊';
+            if (['doc','docx'].includes(ext)) return '📝';
+            if (['jpg','jpeg','png','gif','webp'].includes(ext)) return '🖼️';
+            if (ext === 'zip') return '🗜️';
+            return '📄';
+        }
+
+        function renderizarListaArchivos() {
+            const contenedor = document.getElementById('listaArchivos');
+            if (!semanaActual.unidad) return;
+            const archivos = trabajosData[semanaActual.unidad].semanas[semanaActual.semanaGlobal].archivos || [];
+            if (archivos.length === 0) {
+                contenedor.innerHTML = '<p style="color:#553388;">📂 No hay archivos subidos para esta semana</p>';
+                return;
+            }
+            contenedor.innerHTML = archivos.map((archivo, i) => `
+                <div class="archivo-item">
+                    <div class="archivo-info">
+                        ${getIcono(archivo.nombre)} <strong>${archivo.nombre}</strong>
+                        <small>(${archivo.tamaño ? Math.round(archivo.tamaño / 1024) + ' KB' : '?'})</small>
+                        <a href="${archivo.url}" target="_blank">👁 Ver</a>
+                        <a href="${archivo.url}" download="${archivo.nombre}">⬇ Descargar</a>
+                    </div>
+                    <button class="btn-eliminar-archivo" onclick="eliminarArchivo(${i})">🗑</button>
+                </div>
+            `).join('');
+        }
+
+        async function eliminarArchivo(index) {
+            const semana = trabajosData[semanaActual.unidad].semanas[semanaActual.semanaGlobal];
+            const archivo = semana.archivos[index];
+            // Eliminar del Storage
+            const path = `semana-${semanaActual.semanaGlobal}/${archivo.nombre}`;
+            await db.storage.from('trabajos').remove([path]);
+            // Eliminar del array y guardar en BD
+            semana.archivos.splice(index, 1);
+            await guardarArchivosEnBD(semana.archivos);
+            renderizarListaArchivos();
+            actualizarPreview();
+            toast('🗑 Archivo eliminado');
+        }
+
+        async function guardarArchivosEnBD(archivos) {
+            // Guardar solo metadata (nombre, url, tamaño) en la columna archivos de la tabla
+            const lista = archivos.map(a => ({ nombre: a.nombre, url: a.url, tamaño: a.tamaño }));
+            await db.from('trabajos')
+                .update({ archivos: lista })
+                .eq('unidad', semanaActual.unidad)
+                .eq('semana', semanaActual.semanaGlobal);
+        }
+
+        // =============================================
+        // PREVIEW
+        // =============================================
+        function actualizarPreview() {
+            if (!semanaActual.unidad) return;
+            const numArchivos = (trabajosData[semanaActual.unidad].semanas[semanaActual.semanaGlobal].archivos || []).length;
+            const titulo = document.getElementById('editTitulo').value;
+            const desc = document.getElementById('editDescripcion').value;
+            const enlace = document.getElementById('editEnlace').value;
+            const estado = document.getElementById('editEstado').value;
+            const estadoTexto = estado === 'completado' ? '✓ Completado' : estado === 'subido' ? '↑ Subido' : '⏳ Pendiente';
+            document.getElementById('preview').innerHTML = `
+                <strong style="color:#cc44ff;">▶ VISTA PREVIA:</strong><br><br>
+                ⬡ <strong>Título:</strong> ${titulo}<br>
+                ⬡ <strong>Descripción:</strong> ${desc}<br>
+                ⬡ <strong>Enlace:</strong> ${enlace !== '#' ? enlace : 'Sin enlace'}<br>
+                ⬡ <strong>Estado:</strong> ${estadoTexto}<br>
+                ⬡ <strong>Archivos:</strong> ${numArchivos} archivo(s) adjunto(s)
+            `;
+        }
+
+        // =============================================
+        // EVENTOS
+        // =============================================
+        document.getElementById('cargarSemana').addEventListener('click', function () {
+            const valor = document.getElementById('semanaSelect').value;
+            if (!valor) { toast('Selecciona una semana primero', 'error'); return; }
+            const [unidad, sg] = valor.split('|').map(Number);
+            semanaActual = { unidad, semanaGlobal: sg };
+            const semana = trabajosData[unidad].semanas[sg];
+            document.getElementById('editTitulo').value = semana.titulo;
+            document.getElementById('editDescripcion').value = semana.descripcion;
+            document.getElementById('editEnlace').value = semana.enlace;
+            document.getElementById('editEstado').value = semana.estado;
+            document.getElementById('semanaTitulo').textContent = `▶ Editando: ${UNIDADES[unidad]} — Semana ${sg}`;
+            document.getElementById('formEditar').style.display = 'block';
+            renderizarListaArchivos();
+            actualizarPreview();
+        });
+
+        document.getElementById('btnSubirArchivo').addEventListener('click', async function () {
+            if (!semanaActual.unidad) { toast('Primero selecciona una semana', 'error'); return; }
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            if (!file) { toast('Selecciona un archivo', 'error'); return; }
+
+            // Mostrar barra de progreso
+            const progress = document.getElementById('uploadProgress');
+            const bar = document.getElementById('progressBar');
+            const txt = document.getElementById('progressText');
+            progress.style.display = 'block';
+            bar.style.width = '30%';
+            txt.textContent = 'SUBIENDO A LA NUBE...';
+            document.getElementById('btnSubirArchivo').disabled = true;
+
+            // Ruta en el bucket: semana-N/nombre_archivo
+            const path = `semana-${semanaActual.semanaGlobal}/${Date.now()}_${file.name}`;
+
+            bar.style.width = '60%';
+
+            const { error: uploadError } = await db.storage
+                .from('trabajos')
+                .upload(path, file, { upsert: true });
+
+            if (uploadError) {
+                progress.style.display = 'none';
+                document.getElementById('btnSubirArchivo').disabled = false;
+                toast('⚠ Error al subir: ' + uploadError.message, 'error');
+                return;
+            }
+
+            bar.style.width = '85%';
+            txt.textContent = 'OBTENIENDO URL...';
+
+            // Obtener URL pública del archivo
+            const { data: urlData } = db.storage
+                .from('trabajos')
+                .getPublicUrl(path);
+
+            const publicUrl = urlData.publicUrl;
+
+            bar.style.width = '100%';
+            txt.textContent = '✓ ARCHIVO SUBIDO';
+
+            // Guardar metadata en la estructura local
+            const semana = trabajosData[semanaActual.unidad].semanas[semanaActual.semanaGlobal];
+            if (!semana.archivos) semana.archivos = [];
+            semana.archivos.push({ nombre: file.name, url: publicUrl, tamaño: file.size });
+
+            // Guardar lista de archivos en Supabase BD
+            await guardarArchivosEnBD(semana.archivos);
+
+            setTimeout(() => { progress.style.display = 'none'; bar.style.width = '0%'; }, 1500);
+            document.getElementById('btnSubirArchivo').disabled = false;
+            fileInput.value = '';
+            renderizarListaArchivos();
+            actualizarPreview();
+            toast('☁ Archivo subido a la nube — visible desde cualquier dispositivo');
+        });
+
+        document.getElementById('guardarCambios').addEventListener('click', async function () {
+            if (!semanaActual.unidad) return;
+            const datos = {
+                titulo: document.getElementById('editTitulo').value,
+                descripcion: document.getElementById('editDescripcion').value,
+                enlace: document.getElementById('editEnlace').value,
+                estado: document.getElementById('editEstado').value
+            };
+            // Actualizar estructura local
+            const semana = trabajosData[semanaActual.unidad].semanas[semanaActual.semanaGlobal];
+            Object.assign(semana, datos);
+            // Guardar en Supabase
+            const ok = await guardarEnSupabase(semanaActual.unidad, semanaActual.semanaGlobal, datos);
+            if (ok) {
+                llenarSelect();
+                actualizarPreview();
+            }
+        });
+
+        document.getElementById('editTitulo').addEventListener('input', actualizarPreview);
+        document.getElementById('editDescripcion').addEventListener('input', actualizarPreview);
+        document.getElementById('editEnlace').addEventListener('input', actualizarPreview);
+        document.getElementById('editEstado').addEventListener('change', actualizarPreview);
+
+        document.getElementById('btnCerrarSesion').addEventListener('click', function (e) {
+            e.preventDefault();
+            localStorage.removeItem('adminLogged');
+            window.location.href = "index.html";
+        });
+
+        // =============================================
+        // INICIO
+        // =============================================
+        cargarDesdeSupabase();
+    </script>
+</body>
+</html>
 
     <footer>
         © 2026 | INGENIERÍA DE SISTEMAS | PORTAFOLIO ACADÉMICO | BASE DE DATOS II
