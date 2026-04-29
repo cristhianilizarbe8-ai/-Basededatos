@@ -515,7 +515,7 @@
             const archivo = semana.archivos[index];
             // Eliminar del Storage
             const path = `semana-${semanaActual.semanaGlobal}/${archivo.nombre}`;
-            await db.storage.from('archivos').remove([path]);
+            await db.storage.from('trabajos').remove([path]);
             // Eliminar del array y guardar en BD
             semana.archivos.splice(index, 1);
             await guardarArchivosEnBD(semana.archivos);
@@ -594,7 +594,7 @@
             bar.style.width = '60%';
 
             const { error: uploadError } = await db.storage
-                .from('archivos')
+                .from('trabajos')
                 .upload(path, file, { upsert: true });
 
             if (uploadError) {
@@ -609,7 +609,7 @@
 
             // Obtener URL pública del archivo
             const { data: urlData } = db.storage
-                .from('archivos')
+                .from('trabajos')
                 .getPublicUrl(path);
 
             const publicUrl = urlData.publicUrl;
