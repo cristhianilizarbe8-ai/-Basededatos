@@ -250,7 +250,7 @@
         <div class="nav-menu">
             <a href="index.html">INICIO</a>
             <a href="trabajos.html">TRABAJOS</a>
-            <a href="login.html">LOGIN</a>
+            <a href="#" id="btnCerrarSesionNav">CERRAR SESIÓN</a>
         </div>
     </div>
 
@@ -657,6 +657,12 @@
         document.getElementById('editEnlace').addEventListener('input', actualizarPreview);
         document.getElementById('editEstado').addEventListener('change', actualizarPreview);
 
+        document.getElementById('btnCerrarSesionNav').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('adminLogged');
+            window.location.href = "login.html";
+        });
+
         document.getElementById('btnCerrarSesion').addEventListener('click', function (e) {
             e.preventDefault();
             localStorage.removeItem('adminLogged');
@@ -670,3 +676,4 @@
     </script>
 </body>
 </html>
+
